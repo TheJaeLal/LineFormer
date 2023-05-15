@@ -1,5 +1,5 @@
 # LineFormer - Rethinking Chart Data Extraction as Instance Segmentation
-===
+
 Official repository for the ICDAR 2023 Paper
 
 [<u>[Link]</u>](https://arxiv.org/abs/2305.01837) to the paper.
