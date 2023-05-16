@@ -243,29 +243,21 @@ def get_dataseries(img, annot=None, to_clean=False, post_proc=False, mask_kp_sam
         return pred_ds
 
 
-# Swin Transformer Backbone with more PMC data
-# CONFIG = "/a2il/data/ChartAnalysis/exp_7_SwinTMore/mask2former_swin_t_config.py"
-# CKPT = "/a2il/data/ChartAnalysis/exp_7_SwinTMore/best_segm_mAP_iter_17000.pth"
+# Swin Transformer Backbone
+CONFIG = "lineformer_swin_t_config.py"
+CKPT = "best_segm_mAP_iter_17000.pth"
+DEVICE = 'cpu'
+model = load_model(CONFIG, CKPT, DEVICE)
+print('Loaded Model:', model)
+# if __name__ == '__main__':
+#     img_path = "/a2il/data/ChartAnalysis/pmc_2020_split4/val_images/PMC3169544___pgen.1002274.g005.png"
+#     #Note: Image is Loaded as BGR to RGB
+#     img = mmcv.imread(img_path)
+#     inst_masks = do_instance(model, img, score_thr=0.3)
+#     annot_img = draw_lines(img, inst_masks)
+#     post_processed_mask = post_process(inst_masks)
 
-# Swin Transformer Train on Linex, Adobesynth and PMC
-# CONFIG = "/a2il/data/ChartAnalysis/lineformer_exp5_cfg.py"
-# CKPT = "/a2il/data/ChartAnalysis/best_segm_mAP_iter_20750.pth"
-
-# Swin Transformer Train on Linex, Adobesynth and PMC
-# CONFIG = "/a2il/data/ChartAnalysis/lineformer_exp5_cfg.py"
-# CKPT = "/a2il/data/ChartAnalysis/best_segm_mAP_iter_20750.pth"
-
-# model = load_model()
-
-if __name__ == '__main__':
-    img_path = "/a2il/data/ChartAnalysis/pmc_2020_split4/val_images/PMC3169544___pgen.1002274.g005.png"
-    #Note: Image is Loaded as BGR to RGB
-    img = mmcv.imread(img_path)
-    inst_masks = do_instance(model, img, score_thr=0.3)
-    annot_img = draw_lines(img, inst_masks)
-    post_processed_mask = post_process(inst_masks)
-
-    for i in range(len(post_processed_mask)):
-        cv2.imwrite(str(i)+".jpg", post_processed_mask[i])
-        #cv2.imwrite(str(i)+".jpg", inst_masks[i].astype(np.uint8)*255)
+#     for i in range(len(post_processed_mask)):
+#         cv2.imwrite(str(i)+".jpg", post_processed_mask[i])
+#         #cv2.imwrite(str(i)+".jpg", inst_masks[i].astype(np.uint8)*255)
         
