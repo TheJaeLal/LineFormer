@@ -10,7 +10,7 @@ Official repository for the ICDAR 2023 Paper
 | [ChartOCR](https://openaccess.thecvf.com/content/WACV2021/papers/Luo_ChartOCR_Data_Extraction_From_Charts_Images_via_a_Deep_Hybrid_WACV_2021_paper.pdf)        | 84.67                                    | 55                  | 83.89                            | 72.9            | 86.47                           | 78.25          |
 | [Lenovo](https://link.springer.com/chapter/10.1007/978-3-030-86549-8_37)          | **99.29**                                | **98.81**          | 84.03                            | 67.01           | -                               | -              |
 | [LineEX](https://openaccess.thecvf.com/content/WACV2023/papers/P._LineEX_Data_Extraction_From_Scientific_Line_Charts_WACV_2023_paper.pdf)          | 82.52                                    | 81.97               | 50.23                         | 47.03           | 71.13                           | 71.08          |
-| **Lineformer** (Ours)   | 97.51                                    | 97.02               | **93.1**                          | **88.25**       | **99.20**                       | **97.57**      |
+| [**Lineformer**](https://arxiv.org/abs/2305.01837) (Ours)   | 97.51                                    | 97.02               | **93.1**                          | **88.25**       | **99.20**                       | **97.57**      |
 
 [^1]: [task-6a from CHART-Info challenge](https://example.com/chart-info-task-6a)
 [^2]: [task-6b data score from CHART-Info challenge](https://example.com/chart-info-task-6b)
