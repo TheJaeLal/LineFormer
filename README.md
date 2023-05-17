@@ -7,17 +7,14 @@ Official repository for the ICDAR 2023 Paper
 ## Quantitative Results
 | Dataset             | AdobeSynth19 Visual Element Detection[^1] | Data Extraction[^2] | UB-PMC22 Visual Element Detection | Data Extraction | LineEX Visual Element Detection | Data Extraction |
 |---------------------|------------------------------------------|---------------------|----------------------------------|-----------------|---------------------------------|----------------|
-| ChartOCR[^3]        | 84.67                                    | 55                  | 83.89                            | 72.9            | 86.47                           | 78.25          |
-| Lenovo[^4]          | **99.29**                                | **98.81**          | 84.03                            | 67.01           | -                               | -              |
-| LineEX[^5]          | 82.52                                    | 81.97               | 50.23[^6]                         | 47.03           | 71.13                           | 71.08          |
+| [ChartOCR](https://openaccess.thecvf.com/content/WACV2021/papers/Luo_ChartOCR_Data_Extraction_From_Charts_Images_via_a_Deep_Hybrid_WACV_2021_paper.pdf)        | 84.67                                    | 55                  | 83.89                            | 72.9            | 86.47                           | 78.25          |
+| [Lenovo](https://link.springer.com/chapter/10.1007/978-3-030-86549-8_37)          | **99.29**                                | **98.81**          | 84.03                            | 67.01           | -                               | -              |
+| [LineEX](https://openaccess.thecvf.com/content/WACV2023/papers/P._LineEX_Data_Extraction_From_Scientific_Line_Charts_WACV_2023_paper.pdf)          | 82.52                                    | 81.97               | 50.23[^3]                         | 47.03           | 71.13                           | 71.08          |
 | **Lineformer** (Ours)   | 97.51                                    | 97.02               | **93.1**                          | **88.25**       | **99.20**                       | **97.57**      |
 
 [^1]: [task-6a from CHART-Info challenge](https://example.com/chart-info-task-6a)
 [^2]: [task-6b data score from CHART-Info challenge](https://example.com/chart-info-task-6b)
-[^3]: [ChartOCR~\cite{luo_chartocr_2021}](https://openaccess.thecvf.com/content/WACV2021/papers/Luo_ChartOCR_Data_Extraction_From_Charts_Images_via_a_Deep_Hybrid_WACV_2021_paper.pdf)
-[^4]: [Lenovo~\cite{ma_towards_2021}](https://link.springer.com/chapter/10.1007/978-3-030-86549-8_37)
-[^5]: [LineEX~\cite{p_lineex_2023}](https://openaccess.thecvf.com/content/WACV2023/papers/P._LineEX_Data_Extraction_From_Scientific_Line_Charts_WACV_2023_paper.pdf)
-[^6]: Ignoring samples without legend, as LineEX doesn't support them
+[^3]: Ignoring samples without legend, as LineEX doesn't support them
 
 <!-- **If you would like to cite our work:**
 ```latex
