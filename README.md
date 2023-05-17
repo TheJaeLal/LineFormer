@@ -23,7 +23,7 @@ Official repository for the ICDAR 2023 Paper
 ## Model Usage
 ### Install Environment
 
-This code is based on [MMdetection Framework](https://github.com/open-mmlab/mmdetection) The following is brief environment and installation:
+This code is based on [MMdetection Framework](https://github.com/open-mmlab/mmdetection).
 
 Code has been tested on Pytorch 1.13.1 and CUDA 11.7.
 
@@ -38,8 +38,7 @@ bash install.sh
 ### Inference
 
 1. Download the Trained Model Checkpoint [here](https://drive.google.com/drive/folders/1K_zLZwgoUIAJtfjwfCU5Nv33k17R0O5T?usp=sharing)
-2. Verify the Path to Pretrained Checkpoint in `lineformer_swin_t_config.py` and `infer.py`
-3. Use the demo inference snippet shown below
+2. Use the demo inference snippet shown below
 
 ```python
 import infer
