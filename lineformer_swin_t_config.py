@@ -1,6 +1,6 @@
 
 # PATH TO PRETRAINED CHECKPOINT
-pretrained_ckpt_path = 'best_segm_mAP_iter_17000.pth'
+pretrained_ckpt_path = None
 
 dataset_type = 'CocoDataset'
 
@@ -104,8 +104,8 @@ test_pipeline = [
 PMC_train_data = dict(
                 type='CocoDataset',
                 classes=classes,
-                ann_file=data_root + 'coco_pmc/annotations/train_coco_annot.json',
-                img_prefix=data_root + 'coco_pmc/train_images',
+                ann_file=data_root + 'coco_pmc_unclean/annotations/train_coco_annot.json',
+                img_prefix=data_root + 'coco_pmc_unclean/train_images',
                 pipeline=train_pipeline)
 
 AdobeSynth_train_data = dict(
@@ -125,8 +125,8 @@ LineEX_train_data = dict(
 PMC_test_data = dict(
         type='CocoDataset',
         classes=classes,
-        ann_file=data_root + 'coco_pmc/annotations/val_coco_annot.json',
-        img_prefix=data_root + 'coco_pmc/val_images',
+        ann_file=data_root + 'coco_pmc_unclean/annotations/val_coco_annot.json',
+        img_prefix=data_root + 'coco_pmc_unclean/val_images',
         pipeline=test_pipeline)
 
 LineEX_test_data = dict(
@@ -323,7 +323,7 @@ model = dict(
 embed_multi = dict(lr_mult=1.0, decay_mult=0.0)
 optimizer = dict(
     type='AdamW',
-    lr=0.0005,
+    lr=1e-4,
     weight_decay=0.05,
     eps=1e-08,
     betas=(0.9, 0.999),

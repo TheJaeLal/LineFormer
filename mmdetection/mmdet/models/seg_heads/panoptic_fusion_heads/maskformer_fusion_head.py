@@ -158,8 +158,8 @@ class MaskFormerFusionHead(BasePanopticFusionHead):
         mask_pred_binary = mask_pred_binary.bool()
         bboxes = mask2bbox(mask_pred_binary)
         bboxes = torch.cat([bboxes, det_scores[:, None]], dim=-1)
-        # return labels_per_image, bboxes, mask_pred_binary
-        return labels_per_image, bboxes, mask_pred.sigmoid()
+        return labels_per_image, bboxes, mask_pred_binary
+        # return labels_per_image, bboxes, mask_pred.sigmoid()
 
     def simple_test(self,
                     mask_cls_results,

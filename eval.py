@@ -14,7 +14,7 @@ import argparse
 from tqdm import tqdm
 
 
-def get_results(img_dir, annot_dir, clean_chart, post_proc):
+def get_results(img_dir, annot_dir, post_proc):
     results = []
     for pname in tqdm(os.listdir(img_dir)):
         sample_name = Path(pname).stem
@@ -27,7 +27,7 @@ def get_results(img_dir, annot_dir, clean_chart, post_proc):
         img = mmcv.imread(img_path)
         # print(annot['task6']['output']['visual elements']['lines'])
         try:
-            pred_ds = infer.get_dataseries(img, annot, to_clean=clean_chart, post_proc=post_proc, mask_kp_sample_interval=10)
+            pred_ds = infer.get_dataseries(img, annot=None, to_clean=False, post_proc=post_proc, mask_kp_sample_interval=10)
             # if sample_name == 'PMC6362862___7':
                 # exit(0)
         except Exception as e:
@@ -73,12 +73,11 @@ def main():
     parser = argparse.ArgumentParser(description='Process some data.')
     
     # Add arguments
-    parser.add_argument('data_dir', type=str, nargs='?', default='/a2il/data/ChartAnalysis/pmc_2020_split4/', help='Path to data directory')
-    parser.add_argument('--model_config', type=str, nargs='?', default="/data_local/jayashok/LineFormer_exp/exp_9_PMCDeg/lineformer_exp9_cfg.py", help='Path to model config')
-    parser.add_argument('--model_ckpt', type=str, nargs='?', default="/data_local/jayashok/LineFormer_exp/exp_9_PMCDeg/best_segm_mAP_iter_9500.pth", help='Path to saved model checkpoint')
+    parser.add_argument('data_dir', type=str, help='Path to data directory')
+    parser.add_argument('--model_config', type=str, nargs='?', default="lineformer_swin_t_config.py", help='Path to model config')
+    parser.add_argument('--model_ckpt', type=str, nargs='?', default="iter_3000.pth", help='Path to saved model checkpoint')
     parser.add_argument('--device', type=str, nargs='?', default="cuda:0", help='Device to run model inference')
-    parser.add_argument('--clean_chart_image', action='store_true', help='Clean the chart image before extracting data')
-    parser.add_argument('--postproc_off', action='store_true', help='Turn off postprocessing in data extraction')
+    parser.add_argument('--postproc', action='store_true', help='Turn on postprocessing in data extraction')
 
     # Parse arguments
     args = parser.parse_args()
@@ -94,7 +93,7 @@ def main():
 
     # Run Inference on all the samples...
     print('Evaluating on :', args.data_dir)
-    results = get_results(img_dir, annot_dir, clean_chart=args.clean_chart_image, post_proc=(not args.postproc_off))
+    results = get_results(img_dir, annot_dir, post_proc=args.postproc)
 
     print('Calculating 6a score')
     df_6a = get_metric(results, score_func=metric6a.metric_6a_indv)

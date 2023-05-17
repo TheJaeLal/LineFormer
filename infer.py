@@ -50,7 +50,7 @@ def get_distinct_colors(n):
 def load_model(config, ckpt, device):
     global model
     model = init_detector(config, ckpt, device=device)
-    return 
+    return
 
 
 def do_instance(model, img, score_thr=0.3):
@@ -59,7 +59,7 @@ def do_instance(model, img, score_thr=0.3):
     return parse_result(result, score_thr)
 
 def parse_result(result, score_thresh=0.3):
-    line_data = result[0][0]
+    line_data = result
     # print(type(result))
     bbox, masks = line_data[0][0], line_data[1][0]
     inst_masks = list(itertools.compress(masks, ((bbox[:, 4] > score_thresh).tolist())))
@@ -208,8 +208,8 @@ def get_dataseries(img, annot=None, to_clean=False, post_proc=False, mask_kp_sam
     # get inference masks
     inst_masks = do_instance(model, clean_img, score_thr=0.3)
     # return inst_masks
-    mask_thresh = 0.5
-    inst_masks = [(line_mask > mask_thresh).astype(np.uint8)*255 for line_mask in inst_masks]
+    # mask_thresh = 0.5
+    inst_masks = [line_mask.astype(np.uint8)*255 for line_mask in inst_masks]
     # for line_masks in inst_masks:
     #     line_masks[:, line_masks.sum(axis=1)>1] = 0
     # plt.imshow(inst_masks[0])
@@ -244,11 +244,11 @@ def get_dataseries(img, annot=None, to_clean=False, post_proc=False, mask_kp_sam
 
 
 # Swin Transformer Backbone
-CONFIG = "lineformer_swin_t_config.py"
-CKPT = "best_segm_mAP_iter_17000.pth"
-DEVICE = 'cpu'
-model = load_model(CONFIG, CKPT, DEVICE)
-print('Loaded Model:', model)
+#CONFIG = "lineformer_swin_t_config.py"
+#CKPT = "train_work_dir/best_segm_mAP_iter_500.pth"
+#DEVICE = 'cpu'
+#load_model(CONFIG, CKPT, DEVICE)
+#print('Loaded Model:', CKPT)
 # if __name__ == '__main__':
 #     img_path = "/a2il/data/ChartAnalysis/pmc_2020_split4/val_images/PMC3169544___pgen.1002274.g005.png"
 #     #Note: Image is Loaded as BGR to RGB

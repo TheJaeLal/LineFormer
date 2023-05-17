@@ -17,9 +17,10 @@ from mmdet.datasets import (build_dataloader, build_dataset,
                             replace_ImageToTensor)
 from mmdet.models import build_detector
 from mmdet.utils import (build_ddp, build_dp, compat_cfg, get_device,
-                         replace_cfg_vals, rfnext_init_model,
-                         setup_multi_processes, update_data_root)
+                         replace_cfg_vals, setup_multi_processes,
+                         update_data_root)
 
+import ipdb
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -220,8 +221,6 @@ def main():
     # build the model and load checkpoint
     cfg.model.train_cfg = None
     model = build_detector(cfg.model, test_cfg=cfg.get('test_cfg'))
-    # init rfnext if 'RFSearchHook' is defined in cfg
-    rfnext_init_model(model, cfg=cfg)
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is None and cfg.get('device', None) == 'npu':
         fp16_cfg = dict(loss_scale='dynamic')
@@ -258,6 +257,13 @@ def main():
             model, data_loader, args.tmpdir, args.gpu_collect
             or cfg.evaluation.get('gpu_collect', False))
 
+    # ipdb.set_trace()
+    # print("***************OUTPUTS**************")
+    # print(type(outputs))
+    # if isinstance(outputs, list):
+        # print(len(outputs), type(outputs[0]))
+
+    # print(len(outputs), type(outputs), type(outputs[0]))
     rank, _ = get_dist_info()
     if rank == 0:
         if args.out:
@@ -275,6 +281,13 @@ def main():
             ]:
                 eval_kwargs.pop(key, None)
             eval_kwargs.update(dict(metric=args.eval, **kwargs))
+            
+            # if isinstance(outputs, list):
+            #     import pickle
+            #     with open(f'pre_eval_outs_{time.time()}.pkl', 'wb') as f:
+            #         pickle.dump(outputs, f)
+            # print(type(dataset))
+
             metric = dataset.evaluate(outputs, **eval_kwargs)
             print(metric)
             metric_dict = dict(config=args.config, metric=metric)
