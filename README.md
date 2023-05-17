@@ -47,6 +47,7 @@ plt.imshow(line_utils.draw_kps(img, line_dataseries))
 
 Example extraction result:
 
-![demo result](demo/sample_result.jpg "Title")
+![input image](demo/PMC5959982___3_HTML.jpg "Input")
+![demo result](demo/sample_result.png "Detection Result")
 
 Note: LineFormer returns data in form of x,y points w.r.t the image, to extract full data-values you need to extract axis information, which can be done using [this](https://github.com/pengyu965/ChartDete/) repo.
