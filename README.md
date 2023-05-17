@@ -9,7 +9,7 @@ Official repository for the ICDAR 2023 Paper
 | ChartOCR[^3]        | 84.67                                    | 55                  | 83.89                            | 72.9            | 86.47                           | 78.25          |
 | Lenovo[^4]          | **99.29**                                | **98.81**          | 84.03                            | 67.01           | -                               | -              |
 | LineEX[^5]          | 82.52                                    | 81.97               | 50.23[^6]                         | 47.03           | 71.13                           | 71.08          |
-| Lineformer (Ours)   | 97.51                                    | 97.02               | **93.1**                          | **88.25**       | **99.20**                       | **97.57**      |
+| **Lineformer** (Ours)   | 97.51                                    | 97.02               | **93.1**                          | **88.25**       | **99.20**                       | **97.57**      |
 
 [^1]: [task-6a from CHART-Info challenge](https://example.com/chart-info-task-6a)
 [^2]: [task-6b data score from CHART-Info challenge](https://example.com/chart-info-task-6b)
