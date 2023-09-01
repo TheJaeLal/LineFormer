@@ -2,7 +2,7 @@
 
 Official repository for the ICDAR 2023 Paper
 
-[<u>[Link]</u>](https://arxiv.org/abs/2305.01837) to the paper.
+[<u>[Link]</u>](https://link.springer.com/chapter/10.1007/978-3-031-41734-4_24) to the paper.
 
 ## Quantitative Results
 | Dataset             | AdobeSynth19 Visual Element Detection[^1] | Data Extraction[^2] | UB-PMC22 Visual Element Detection | Data Extraction | LineEX Visual Element Detection | Data Extraction |
