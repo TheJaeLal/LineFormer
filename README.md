@@ -68,4 +68,27 @@ Example extraction result:
 ![input image](demo/PMC5959982___3_HTML.jpg "Input")
 ![demo result](demo/sample_result.png "Detection Result")
 
+## Citation
+If you found our work useful, please cite us as follows:
+```bib
+@InProceedings{10.1007/978-3-031-41734-4_24,
+author="Lal, Jay
+and Mitkari, Aditya
+and Bhosale, Mahesh
+and Doermann, David",
+editor="Fink, Gernot A.
+and Jain, Rajiv
+and Kise, Koichi
+and Zanibbi, Richard",
+title="LineFormer: Line Chart Data Extraction Using Instance Segmentation",
+booktitle="Document Analysis and Recognition - ICDAR 2023",
+year="2023",
+publisher="Springer Nature Switzerland",
+address="Cham",
+pages="387--400",
+abstract="Data extraction from line-chart images is an essential component of the automated document understanding process, as line charts are a ubiquitous data visualization format. However, the amount of visual and structural variations in multi-line graphs makes them particularly challenging for automated parsing. Existing works, however, are not robust to all these variations, either taking an all-chart unified approach or relying on auxiliary information such as legends for line data extraction. In this work, we propose LineFormer, a robust approach to line data extraction using instance segmentation. We achieve state-of-the-art performance on several benchmark synthetic and real chart datasets. Our implementation is available at https://github.com/TheJaeLal/LineFormer.",
+isbn="978-3-031-41734-4"
+}
+```
+
 Note: LineFormer returns data in form of x,y points w.r.t the image, to extract full data-values you need to extract axis information, which can be done using [this](https://github.com/pengyu965/ChartDete/) repo.
