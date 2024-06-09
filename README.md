@@ -91,4 +91,8 @@ isbn="978-3-031-41734-4"
 }
 ```
 
-Note: LineFormer returns data in form of x,y points w.r.t the image, to extract full data-values you need to extract axis information, which can be done using [this](https://github.com/pengyu965/ChartDete/) repo.
+## Full Plot Data Extraction
+Note: LineFormer returns data in form of x,y points w.r.t the image, to extract full data-values you need to extract axis information. 
+Please refer the following resources:
+* [E2E Line Chart Data extraction](https://github.com/tdsone/extract-line-chart-data) implementation put together by [@tdsone](https://github.com/tdsone)
+* Chart Element Detection [this](https://github.com/pengyu965/ChartDete/) repo.
