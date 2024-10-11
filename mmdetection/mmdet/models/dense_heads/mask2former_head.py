@@ -74,6 +74,44 @@ class Mask2FormerHead(MaskFormerHead):
                  test_cfg=None,
                  init_cfg=None,
                  **kwargs):
+
+
+        class DotDict(dict):
+            """A dictionary that supports dot notation."""
+            def __getattr__(self, attr):
+                return self[attr]
+            def __setattr__(self, key, value):
+                self[key] = value
+            def __delattr__(self, key):
+                del self[key]
+        
+        # Create train_cfg dictionary using DotDict
+        train_cfg = DotDict(
+            num_points=12544,
+            oversample_ratio=3.0,
+            importance_sample_ratio=0.75,
+            assigner=DotDict(
+                type='MaskHungarianAssigner',
+                cls_cost=DotDict(
+                    type='ClassificationCost', weight=2.0),
+                mask_cost=DotDict(
+                    type='CrossEntropyLossCost', weight=5.0, use_sigmoid=True),
+                dice_cost=DotDict(
+                    type='DiceCost', weight=5.0, pred_act=True, eps=1.0)
+            ),
+            sampler=DotDict(type='MaskPseudoSampler')
+        )
+
+        test_cfg = DotDict(
+            panoptic_on=True,
+            semantic_on=False,
+            instance_on=True,
+            max_per_image=100,
+            iou_thr=0.8,
+            filter_low_score=True
+        )
+
+
         super(AnchorFreeHead, self).__init__(init_cfg)
         self.num_things_classes = num_things_classes
         self.num_stuff_classes = num_stuff_classes
