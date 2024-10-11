@@ -1,5 +1,8 @@
 import cv2
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from lifelines import KaplanMeierFitter
 
 # Constants for line drawing and detection
 LINE_THICKNESS = 1
@@ -12,7 +15,8 @@ SEARCH_THICKNESS = 10  # Thickness to search for white pixels
 COLOR_HORIZONTAL = (255, 0, 0)  # Color for horizontal lines
 COLOR_VERTICAL = (0, 255, 0)    # Color for vertical lines
 COLOR_INTERSECTION = (0, 0, 255) # Color for intersections
-COLOR_YELLOW = (0, 255, 255)     # Color for the vertical linepyt
+COLOR_START = (0, 255, 255) 
+COLOR_END = (0, 255, 255) 
 
 
 INPUT_IMAGE = 'demo/image.png'
@@ -32,8 +36,8 @@ def get_binary_map(gray_image):
     return binary_map
 
 
-def draw_horizontal_lines(image, binary_map, line_thickness, line_shift, min_distance, min_line_length, color):
-    """Draw horizontal lines on the image based on the binary map."""
+def get_horizontal_lines(image, binary_map, line_thickness, line_shift, min_distance, min_line_length, color):
+    """Get horizontal lines on the image based on the binary map."""
     height, width = binary_map.shape
     horizontal_lines = []  # Stores y-coordinates of horizontal lines
     last_y = -min_distance  # Initialize to a value smaller than any possible y-coordinate
@@ -46,7 +50,6 @@ def draw_horizontal_lines(image, binary_map, line_thickness, line_shift, min_dis
             else:
                 if count > min_line_length and y - last_y >= min_distance:
                     if y + line_shift < height:  # Check bounds
-                        cv2.line(image, (0, y + line_shift), (width - 1, y + line_shift), color, line_thickness)
                         horizontal_lines.append(y + line_shift)
                         last_y = y
                 count = 0  # Reset count if the sequence is broken
@@ -54,15 +57,14 @@ def draw_horizontal_lines(image, binary_map, line_thickness, line_shift, min_dis
         # Check if the line reaches the end of the row
         if count > min_line_length and y - last_y >= min_distance:
             if y + line_shift < height:
-                cv2.line(image, (0, y + line_shift), (width - 1, y + line_shift), color, line_thickness)
                 horizontal_lines.append(y + line_shift)
                 last_y = y
 
     return horizontal_lines
 
 
-def draw_vertical_lines(image, binary_map, line_thickness, line_shift, min_distance, min_line_length, color):
-    """Draw vertical lines on the image based on the binary map."""
+def get_vertical_lines(image, binary_map, line_thickness, line_shift, min_distance, min_line_length, color):
+    """Get vertical lines on the image based on the binary map."""
     height, width = binary_map.shape
     vertical_lines = []  # Stores x-coordinates of vertical lines
     last_x = -min_distance  # Initialize to a value smaller than any possible x-coordinate
@@ -75,7 +77,6 @@ def draw_vertical_lines(image, binary_map, line_thickness, line_shift, min_dista
             else:
                 if count > min_line_length and x - last_x >= min_distance:
                     if x + line_shift < width:  # Check bounds
-                        cv2.line(image, (x + line_shift, 0), (x + line_shift, height - 1), color, line_thickness)
                         vertical_lines.append(x + line_shift)
                         last_x = x
                 count = 0  # Reset count if the sequence is broken
@@ -83,7 +84,6 @@ def draw_vertical_lines(image, binary_map, line_thickness, line_shift, min_dista
         # Check if the line reaches the end of the column
         if count > min_line_length and x - last_x >= min_distance:
             if x + line_shift < width:
-                cv2.line(image, (x + line_shift, 0), (x + line_shift, height - 1), color, line_thickness)
                 vertical_lines.append(x + line_shift)
                 last_x = x
 
@@ -91,15 +91,13 @@ def draw_vertical_lines(image, binary_map, line_thickness, line_shift, min_dista
 
 
 def mark_intersections(image, horizontal_lines, vertical_lines, color):
-    """Mark intersections of horizontal and vertical lines with dots."""
+    """Get horizontal and vertical lines"""
     intersection_coordinates = []
     for i in range(min(len(horizontal_lines), len(vertical_lines))):
         intersection_point = (vertical_lines[i], horizontal_lines[i])  # (x, y) coordinate of the intersection
         intersection_coordinates.append(intersection_point)
 
-        cv2.circle(image, intersection_point, radius=5, color=color, thickness=-1)
         print(f'Intersection {i + 1}: (X: {intersection_point[0]}, Y: {intersection_point[1]})')
-
 
     return intersection_coordinates
 
@@ -119,7 +117,7 @@ def draw_vertical_line_at_leftmost_white(image, binary_map, blue_line_y):
 
     # Draw a vertical line if a leftmost white pixel was found
     if leftmost_x is not None:
-        cv2.line(image, (leftmost_x, 0), (leftmost_x, height - 1), COLOR_YELLOW, LINE_THICKNESS)
+        # cv2.line(image, (leftmost_x, 0), (leftmost_x, height - 1), COLOR_YELLOW, LINE_THICKNESS)
         print(f'Drawing vertical line at X: {leftmost_x}')
         return (leftmost_x, blue_line_y)
 
@@ -140,18 +138,87 @@ def draw_horizontal_line_at_bottom_most_white(image, binary_map, green_line_x):
 
     # Draw a horizontal line if a bottom-most white pixel was found
     if bottom_most_y is not None:
-        cv2.line(image, (0, bottom_most_y), (width - 1, bottom_most_y), COLOR_YELLOW, LINE_THICKNESS)
+        # cv2.line(image, (0, bottom_most_y), (width - 1, bottom_most_y), COLOR_YELLOW, LINE_THICKNESS)
         print(f'Drawing horizontal line at Y: {bottom_most_y}')
         return (green_line_x, bottom_most_y)
 
+
+def draw_indicators(
+    image,
+    binary_mask,
+    intersection_coordinates,
+    draw_horizontal_lines = False,
+    draw_vertical_lines = False,
+    draw_intersection = False,
+    draw_start_pnt = False,
+    draw_end_pnt = False,
+):  
+    new_image = image.copy()
+    height, width, _ = new_image.shape
+
+    for idx, (x, y) in enumerate(intersection_coordinates):
+        
+        if draw_horizontal_lines and idx != len(intersection_coordinates) - 1:
+            cv2.line(new_image, (0, y), (width - 1, y), COLOR_HORIZONTAL, LINE_THICKNESS)
+        
+        if draw_vertical_lines and idx != 0:
+            cv2.line(new_image, (x, 0), (x, height - 1), COLOR_VERTICAL, LINE_THICKNESS)
+
+        if draw_intersection:
+            cv2.circle(new_image, (x, y), radius=5, color=COLOR_INTERSECTION, thickness=-1)
+
+        if draw_start_pnt and idx == 0:
+            cv2.circle(new_image, (x, y), radius=5, color=COLOR_START, thickness=-1)
+
+        if draw_end_pnt and idx == len(intersection_coordinates) - 1:
+            cv2.circle(new_image, (x, y), radius=5, color=COLOR_END, thickness=-1)
+    
+    return new_image
+
+
+def get_km_df_from_intersections(intersection_coordinates):
+    intersection_coordinates = intersection_coordinates[1:]
+    # Extract times (X) and survival probabilities (Y)
+    x_values = [coord[0] for coord in intersection_coordinates]
+    y_values = [coord[1] for coord in intersection_coordinates]
+
+    y_max = y_values[0]  # Corresponds to 100% survival
+    y_min = y_values[-1]  # Corresponds to 0% survival
+    survival_probabilities = [(y_max - y) / (y_max - y_min) for y in y_values]
+
+    # Prepare the data for Kaplan-Meier Fitting
+    event_times = np.array(x_values)  # Time of events
+    observed_deaths = [1] * (len(event_times) - 1) + [0]  # 1 for deaths, 0 for censoring at the end
+
+    # Create a DataFrame to structure the data for CSV
+    df = pd.DataFrame({
+        'time': event_times,
+        'event_observed': observed_deaths,
+        'survival_probability': survival_probabilities
+    })
+
+    return df
+
+
+def plot_kaplan_meier(df):
+    # Fit the Kaplan-Meier estimator
+    kmf = KaplanMeierFitter()
+    kmf.fit(df['time'], event_observed=df['event_observed'])
+
+    # Plot the Kaplan-Meier curve
+    kmf.plot(ci_show=False)
+    plt.title("Kaplan-Meier Curve from Coordinates")
+    plt.xlabel("Time")
+    plt.ylabel("Survival Probability")
+    plt.show()
 
 
 
 image, gray_image = read_images(INPUT_IMAGE)
 binary_map = get_binary_map(gray_image)
 
-horizontal_lines = draw_horizontal_lines(image, binary_map, LINE_THICKNESS, LINE_SHIFT, MIN_DISTANCE, MIN_LINE_LENGTH, COLOR_HORIZONTAL)
-vertical_lines = draw_vertical_lines(image, binary_map, LINE_THICKNESS, LINE_SHIFT, MIN_DISTANCE, MIN_LINE_LENGTH, COLOR_VERTICAL)
+horizontal_lines = get_horizontal_lines(image, binary_map, LINE_THICKNESS, LINE_SHIFT, MIN_DISTANCE, MIN_LINE_LENGTH, COLOR_HORIZONTAL)
+vertical_lines = get_vertical_lines(image, binary_map, LINE_THICKNESS, LINE_SHIFT, MIN_DISTANCE, MIN_LINE_LENGTH, COLOR_VERTICAL)
 
 
 intersection_coordinates = mark_intersections(image, horizontal_lines, vertical_lines, COLOR_INTERSECTION)
@@ -165,11 +232,28 @@ if vertical_lines:
     last_green_line_x = vertical_lines[-1]  # Get the last vertical green line
     end = draw_horizontal_line_at_bottom_most_white(image, binary_map, last_green_line_x)
 
-# intersection_coordinates.insert(0, start)
+intersection_coordinates.insert(0, start)
 intersection_coordinates.append(end)
 
 print(intersection_coordinates)
 
+
+new_image = draw_indicators(
+    image, 
+    binary_map, 
+    intersection_coordinates, 
+    draw_horizontal_lines=True,
+    draw_vertical_lines=True,
+    draw_intersection=True,
+    draw_start_pnt=True,
+    draw_end_pnt=True,
+)
+
+df = get_km_df_from_intersections(intersection_coordinates)
+df.to_csv('kaplan_meier_data.csv', index=False)
+
+plot_kaplan_meier(df)
+
 # Save or display the result
-cv2.imwrite(OUTPUT_IMAGE, image)
+cv2.imwrite(OUTPUT_IMAGE, new_image)
 
