@@ -189,7 +189,7 @@ def rescale_pred_ds(ds, transformation):
             pt['y'] = int((pt['y']-ty_padd) / sy) + ty_crop
     return ds
 
-def get_dataseries(img, annot=None, to_clean=False, post_proc=False, mask_kp_sample_interval=10, return_masks=False):
+def get_dataseries(img, annot=None, to_clean=False, post_proc=False, mask_kp_sample_interval=1, return_masks=False):
     """
         img: chart image as numpy array (3 channel) 
         annot: json annot object in PMC format (required for cleaning the chart image before data extraction)
