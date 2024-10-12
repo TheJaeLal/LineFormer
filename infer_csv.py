@@ -12,7 +12,7 @@ MIN_LINE_LENGTH = 5
 SEARCH_THICKNESS = 10  # Thickness to search for white pixels
 
 # Color constants
-COLOR_HORIZONTAL = (255, 0, 0)  # Color for horizontal lines
+COLOR_HORIZONTAL = (255, 191, 0)  # Color for horizontal lines
 COLOR_VERTICAL = (0, 255, 0)    # Color for vertical lines
 COLOR_INTERSECTION = (0, 0, 255) # Color for intersections
 COLOR_START = (0, 255, 255) 
