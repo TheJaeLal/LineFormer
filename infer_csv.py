@@ -4,6 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from lifelines import KaplanMeierFitter
 
+from infer import get_dataseries
+
 # Constants for line drawing and detection
 LINE_THICKNESS = 1
 LINE_SHIFT = 2
@@ -202,11 +204,10 @@ def plot_kaplan_meier(df):
     plt.show()
 
 
-def get_single_graf_df(binary_mask, output_image_path):
+def get_single_graf_intersection_coordinates(binary_mask):
     horizontal_lines = get_horizontal_lines(binary_map)
     vertical_lines = get_vertical_lines(binary_map)
     intersection_coordinates = get_intersections(horizontal_lines, vertical_lines)
-
 
     # Get start point
     if horizontal_lines:
@@ -220,24 +221,40 @@ def get_single_graf_df(binary_mask, output_image_path):
         end = get_most_bottom_right_white_pixel(binary_map, last_x_line)
         intersection_coordinates.append(end)
 
+    return intersection_coordinates
 
-    # Draw Debug Lines
-    draw_indicators(
-        binary_map, 
-        intersection_coordinates,
-        output_image_path,
-        draw_horizontal_lines=True,
-        draw_vertical_lines=True,
-        draw_intersection=True,
-        draw_start_pnt=True,
-        draw_end_pnt=True,
-    )
 
-    # Create df
-    df = get_km_df_from_intersections(intersection_coordinates)
-    df.to_csv('kaplan_meier_data.csv', index=False)
+    # plot_kaplan_meier(df)
 
-    plot_kaplan_meier(df)
+
+def get_all_graf_df(img):
+    _, inst_masks = get_dataseries(img, annot=None, to_clean=False, post_proc=False, return_masks=True)
+    all_graf_df = pd.DataFrame()
+
+    for idx, inst_mask in enumerate(inst_masks):
+        output_image_path = f'demo/inst_mask_{idx}'
+        intersection_coordinates = get_single_graf_intersection_coordinates(inst_mask)
+        
+        draw_indicators(
+            inst_mask, 
+            intersection_coordinates,
+            output_image_path,
+            draw_horizontal_lines=True,
+            draw_vertical_lines=True,
+            draw_intersection=True,
+            draw_start_pnt=True,
+            draw_end_pnt=True,
+        )
+
+        # Create df for the current instance
+        df = get_km_df_from_intersections(intersection_coordinates)
+        # df.to_csv('kaplan_meier_data.csv', index=False)
+        
+        # Append the current df to all_graf_df
+        all_graf_df = all_graf_df.append(df, ignore_index=True)
+
+    return all_graf_df
+
 
 
 if __name__ == "__main__":
