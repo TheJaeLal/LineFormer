@@ -4,14 +4,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from lifelines import KaplanMeierFitter
 
-from infer import get_dataseries
+# from infer import get_dataseries
 
 # Constants for line drawing and detection
 LINE_THICKNESS = 1
-LINE_SHIFT = 2
-MIN_DISTANCE = 10 # Min distance between predicted lines
-MIN_LINE_LENGTH = 5
-SEARCH_THICKNESS = 10  # Thickness to search for white pixels
+LINE_SHIFT = 0
+MIN_DISTANCE = 2 # Min distance between predicted lines
+MIN_LINE_LENGTH = 3
+SEARCH_THICKNESS = 1  # Thickness to search for white pixels
 
 # Color constants
 COLOR_HORIZONTAL = (255, 191, 0)  # Color for horizontal lines
@@ -143,8 +143,10 @@ def draw_indicators(
     draw_start_pnt = False,
     draw_end_pnt = False,
 ):  
-    new_image = cv2.cvtColor(binary_mask,cv2.COLOR_GRAY2RGB)
+    # new_image = cv2.cvtColor(binary_mask,cv2.COLOR_GRAY2RGB)
+    new_image = cv2.cvtColor((binary_mask * 255).astype(np.uint8), cv2.COLOR_GRAY2RGB)
     height, width, _ = new_image.shape
+    intersection_coordinates = [x for x in intersection_coordinates if x is not None]
 
     for idx, (x, y) in enumerate(intersection_coordinates):
         
@@ -257,22 +259,86 @@ def get_all_graf_df(img):
 
 
 
+def get_skeleton():
+    from skimage import io, img_as_bool, morphology
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    image_path = 'demo/inst_mask_0.png'
+    mask = io.imread(image_path, as_gray=True)
+
+    # Convert to a binary image
+    binary_mask = img_as_bool(mask)
+    skeleton = morphology.thin(binary_mask)
+
+    return skeleton
+
+
+def get_straight_lines():
+    from skimage import io, feature, img_as_bool
+    from skimage.transform import probabilistic_hough_line
+    import numpy as np
+
+    image_path = 'demo/inst_mask_0.png'
+    mask = io.imread(image_path, as_gray=True)
+
+    # Convert to a binary image
+    binary_mask = img_as_bool(mask)
+    
+    # Detect edges in the binary mask
+    edges = feature.canny(binary_mask)
+
+    # Detect straight lines using the probabilistic Hough transform
+    lines = probabilistic_hough_line(edges, threshold=10, line_length=5, line_gap=3)
+    print(lines)
+    return lines
+
+def get_smooth_skeleton():
+    from skimage import io, img_as_bool, morphology
+    from scipy.ndimage import median_filter
+    import numpy as np
+
+    image_path = 'demo/inst_mask_0.png'
+    mask = io.imread(image_path, as_gray=True)
+
+    # Convert to a binary image
+    binary_mask = img_as_bool(mask)
+    
+    # Skeletonize the image
+    skeleton = morphology.skeletonize(binary_mask)
+    
+    # Apply a median filter to smooth jaggedness
+    smooth_skeleton = median_filter(skeleton, size=2)
+
+    skeleton = morphology.skeletonize(smooth_skeleton)
+
+    return smooth_skeleton
+
+
+
+
 if __name__ == "__main__":
-    input_image_path = 'demo/image.png'
+    input_image_path = 'demo/inst_mask_0.png'
     output_image_path = 'demo/output_image_with_intersections.png'
 
     image, gray_image = read_images(input_image_path)
     binary_map = get_binary_map(gray_image)
 
-    single_graf_intesection = get_single_graf_intersection_coordinates(binary_map)
+    skeleton = get_smooth_skeleton()
+    single_graf_intesection = get_single_graf_intersection_coordinates(skeleton)
+    
+    horizontal_lines = get_horizontal_lines(skeleton)
+    single_graf_intesection = [(0, i) for i in horizontal_lines]
+
+    print(single_graf_intesection)
 
     draw_indicators(
-        binary_map, 
+        skeleton, 
         single_graf_intesection,
         output_image_path,
         draw_horizontal_lines=True,
-        draw_vertical_lines=True,
-        draw_intersection=True,
+        # draw_vertical_lines=True,
+        # draw_intersection=True,
         draw_start_pnt=True,
         draw_end_pnt=True,
     )
