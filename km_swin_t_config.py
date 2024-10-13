@@ -104,37 +104,12 @@ test_pipeline = [
         ])
 ]
 
-
-
-PMC_train_data = dict(
-                type='CocoDataset',
-                classes=classes,
-                ann_file=data_root + 'coco_pmc_unclean/annotations/train_coco_annot.json',
-                img_prefix=data_root + 'coco_pmc_unclean/train_images',
-                pipeline=train_pipeline)
-
-AdobeSynth_train_data = dict(
-                type='CocoDataset',
-                classes=classes,
-                ann_file=data_root + 'coco/annotations/train_coco_annot.json',
-                img_prefix=data_root + 'coco/train_images',
-                pipeline=train_pipeline)
-
-LineEX_train_data = dict(
-                type='CocoDataset',
-                classes=classes,
-                ann_file=data_root + 'coco_LineEX/annotations/train_coco_annot.json',
-                img_prefix=data_root + 'coco_LineEX/train_images',
-                pipeline=train_pipeline_LineEX)
-
 PMC_test_data = dict(
         type='CocoDataset',
         classes=classes,
         ann_file=data_root + 'coco_pmc_unclean/annotations/val_coco_annot.json',
         img_prefix=data_root + 'coco_pmc_unclean/val_images',
         pipeline=test_pipeline)
-
-
 
 FineTuneTrainDataset = dict(
         type='CocoDataset',
@@ -152,8 +127,6 @@ FineTuneTestDataset = dict(
         pipeline=test_pipeline
 )
 
-
-
 data = dict(
     samples_per_gpu=1,
     workers_per_gpu=1,
@@ -164,18 +137,6 @@ data = dict(
             dataset=FineTuneTrainDataset # 1500
         )
     ],
-            #dict(
-            #    type='RepeatDataset',
-            #    times=50,
-            #    dataset=PMC_train_data), # 1400
-            #dict(
-            #    type='RepeatDataset',
-            #    times=1,
-            #    dataset=AdobeSynth_train_data), #40000
-            # dict(
-            #     type='RepeatDataset',
-            #     times=1,
-            #     dataset=LineEX_train_data)], #40000
     test=FineTuneTestDataset)
 
 # Validation config same as test (necessary for mmdetection to run)
