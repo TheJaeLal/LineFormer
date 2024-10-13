@@ -7,7 +7,7 @@ img_path = "demo/plt_0.png"
 img = cv2.imread(img_path)  # BGR format
 
 # CKPT = "iter_3000.pth"
-CKPT = "iter_11500.pth"
+CKPT = "iter.pth"
 CONFIG = "lineformer_swin_t_config.py"
 # CONFIG = "km_swin_t_config.py"
 DEVICE = "cpu"
