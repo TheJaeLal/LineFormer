@@ -2,14 +2,11 @@ import infer
 import cv2
 import line_utils
 
-# img_path = "demo/PMC5959982___3_HTML.jpg"
 img_path = "demo/plt_0.png"
-img = cv2.imread(img_path)  # BGR format
+img = cv2.imread(img_path)
 
-# CKPT = "iter_3000.pth"
 CKPT = "iter.pth"
-CONFIG = "lineformer_swin_t_config.py"
-# CONFIG = "km_swin_t_config.py"
+CONFIG = "km_swin_t_config.py"
 DEVICE = "cpu"
 
 infer.load_model(CONFIG, CKPT, DEVICE)
