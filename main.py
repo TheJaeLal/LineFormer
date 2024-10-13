@@ -16,4 +16,5 @@ line_dataseries, inst_masks = infer.get_dataseries(img, to_clean=False, return_m
 img = line_utils.draw_lines(img, line_utils.points_to_array(line_dataseries))
 
 cv2.imwrite("demo/sample_result.png", img)
-cv2.imwrite("demo/sample_result_mask.png", inst_masks)
+for idx, inst_mask in enumerate(inst_masks):
+    cv2.imwrite(f"demo/sample_result_mask_{idx}.png", inst_mask)
