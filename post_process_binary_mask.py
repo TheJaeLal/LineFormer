@@ -129,7 +129,7 @@ def detect_events(binary_mask, min_vertical_px_length=3):
     return events
 
 
-def get_kaplan_meier_data_from_events(events:list[tuple], group:int):
+def get_kaplan_meier_data_from_events(events:list, group:int):
     times = [event[0] for event in events]
     number_at_risk = [event[1] for event in events]
     censoring_status = [group] * len(events)  # Assuming all events are observed (censoring status = 1)
