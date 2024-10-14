@@ -2,8 +2,9 @@ from mmcv import Config
 from mmdet.apis import train_detector, init_detector
 from mmdet.datasets import build_dataset
 
-# Paths to your checkpoint and config file
-CKPT = None # "iter_3000.pth"
+# Set to `None` if training from Scratch
+CKPT = "original_ckpt.pth" 
+
 CONFIG_PATH = "km_swin_t_config.py"
 
 # Load the config file into a Config object
