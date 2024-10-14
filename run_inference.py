@@ -12,10 +12,8 @@ def run_inference(img):
     line_dataseries, inst_masks = infer.get_dataseries(img, to_clean=False, return_masks=True)
 
     # Visualize extracted line keypoints
-    img = line_utils.draw_lines(img, line_utils.points_to_array(line_dataseries))
-
+    prediction_image = line_utils.draw_lines(img, line_utils.points_to_array(line_dataseries))
     all_df = []
-    cv2.imwrite("demo/sample_result.png", img)
     for idx, inst_mask in enumerate(inst_masks):
         inst_mask = post_process_binary_mask(inst_mask, write_image=True)
         events = detect_events(inst_mask)
@@ -23,7 +21,7 @@ def run_inference(img):
         all_df.append(df)
 
     kaplan_meier_df = pd.concat(all_df, ignore_index=True)
-    return img, inst_masks, kaplan_meier_df
+    return prediction_image, inst_masks, kaplan_meier_df
 
 
 if __name__ == '__main__':
@@ -32,8 +30,8 @@ if __name__ == '__main__':
     img_path = "demo/plt_0.png"
     img = cv2.imread(img_path)
 
-    img, inst_masks, kaplan_meier_df = run_inference(img_path)
-    cv2.imwrite("demo/sample_result.png", img)
+    prediction_image, inst_masks, kaplan_meier_df = run_inference(img_path)
+    cv2.imwrite("demo/sample_result.png", prediction_image)
     kaplan_meier_df.to_csv('demo/kaplan_meier_data.csv', index=False)
 
     for idx, inst_mask in enumerate(inst_masks):
