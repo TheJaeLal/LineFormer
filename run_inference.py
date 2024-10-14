@@ -30,7 +30,7 @@ if __name__ == '__main__':
     img_path = "demo/plt_0.png"
     img = cv2.imread(img_path)
 
-    prediction_image, inst_masks, kaplan_meier_df = run_inference(img_path)
+    prediction_image, inst_masks, kaplan_meier_df = run_inference(img)
     cv2.imwrite("demo/sample_result.png", prediction_image)
     kaplan_meier_df.to_csv('demo/kaplan_meier_data.csv', index=False)
 
