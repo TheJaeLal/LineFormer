@@ -2,7 +2,11 @@ import infer
 import pandas as pd
 import cv2
 import line_utils
-from post_process_binary_mask import post_process_binary_mask, detect_events, get_kaplan_meier_data_from_events
+import post_process_prediction.post_process_utils as post_process_utils
+from post_process_prediction.extract_events import extract_events
+
+
+# from post_process_binary_mask import post_process_binary_mask, detect_events, get_kaplan_meier_data_from_events
 
 CKPT = "iter.pth"
 CONFIG = "km_swin_t_config.py"
@@ -15,9 +19,7 @@ def run_inference(img):
     prediction_image = line_utils.draw_lines(img, line_utils.points_to_array(line_dataseries))
     all_df = []
     for idx, inst_mask in enumerate(inst_masks):
-        inst_mask = post_process_binary_mask(inst_mask, write_image=True)
-        events = detect_events(inst_mask)
-        df = get_kaplan_meier_data_from_events(events, idx)
+        df = extract_events_df(inst_mask, group_idx=idx, write_debug=True, map_to_plot_coordinates=False)
         all_df.append(df)
 
     kaplan_meier_df = pd.concat(all_df, ignore_index=True)
@@ -36,5 +38,3 @@ if __name__ == '__main__':
 
     for idx, inst_mask in enumerate(inst_masks):
         cv2.imwrite(f"demo/sample_result_mask_{idx}.png", inst_mask)
-
-    

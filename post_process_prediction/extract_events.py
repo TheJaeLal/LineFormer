@@ -45,7 +45,7 @@ def extract_event_px_coordinates(binary_mask):
     return intersection_points, debug_image
 
 
-def extract_events(binary_mask, plot_start:tuple=(0, 1), plot_end:tuple=(890, 0), write_debug=False, map_to_plot_coordinates=False) -> pd.DataFrame:
+def extract_events_df(binary_mask, group_idx, plot_start:tuple=(0, 1), plot_end:tuple=(890, 0), write_debug=False, map_to_plot_coordinates=False) -> pd.DataFrame:
     event_coordinates, debug_image = extract_event_px_coordinates(binary_mask)
 
     if map_to_plot_coordinates:
@@ -54,7 +54,7 @@ def extract_events(binary_mask, plot_start:tuple=(0, 1), plot_end:tuple=(890, 0)
     if write_debug:
         cv2.imwrite("sample_result_mask.png", debug_image)
 
-    df = get_kaplan_meier_data_from_events(event_coordinates, group=1)
+    df = get_kaplan_meier_data_from_events(event_coordinates, group=group_idx)
 
     return df
 
