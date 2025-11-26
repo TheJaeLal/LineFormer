@@ -1,4 +1,5 @@
-# LineFormer - Rethinking Chart Data Extraction as Instance Segmentation
+# LineFormer - Rethinking Chart Data Extraction as Instance Segmentation,
+Jay Lal, Aditya Mitkari*, Mahesh Bhosale*, David Doermann, International Conference on Document Analysis and Recognition, 2023.
 
 Official repository for the ICDAR 2023 Paper
 
